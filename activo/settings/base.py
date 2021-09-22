@@ -1,3 +1,4 @@
+import os
 import environ
 from pathlib import Path
 
@@ -23,7 +24,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ["channels"]
 LOCAL_APPS = []
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -55,7 +56,10 @@ TEMPLATES = [
     },
 ]
 
+FORCE_SCRIPT_NAME = "/api"
+
 WSGI_APPLICATION = "activo.wsgi.application"
+ASGI_APPLICATION = "activo.routing.application"
 
 
 # Password validation
@@ -94,7 +98,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATIC_URL = FORCE_SCRIPT_NAME + "/static/"
+MEDIA_URL = FORCE_SCRIPT_NAME + "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
