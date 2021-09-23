@@ -1,0 +1,25 @@
+language: python
+python:
+  - "3.9"
+env:
+  global:
+    - CC_TEST_REPORTER_ID=bdf81ae7a94695bbf323c1e5510d70ada025ec3464dc916f2c2a2f888f6dbbe2
+install:
+  - pip install -r requirements.txt
+  - pip install coverage
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database activo_test_db;' -U postgres
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+  - pytest
+
+after_success:
+  - coverage xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

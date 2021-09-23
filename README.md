@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/Paccy10/activo-api.svg?token=WAzzRJkVxdCSbeHdvear&branch=main)](https://app.travis-ci.com/Paccy10/activo-api) [![Test Coverage](https://api.codeclimate.com/v1/badges/000696a2b1aecb6240ed/test_coverage)](https://codeclimate.com/github/Paccy10/activo-api/test_coverage) [![Maintainability](https://api.codeclimate.com/v1/badges/000696a2b1aecb6240ed/maintainability)](https://codeclimate.com/github/Paccy10/activo-api/maintainability)
+
 # Activo API
 
 Asset management is defined as the systematic and coordinated activities and practices through which an organization optimally and sustainably manages its assets and asset systems, their associated performance, risks and expenditures over their life cycles to achieve its organizational strategic plan where an
