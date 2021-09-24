@@ -5,7 +5,11 @@ from .serializers import UserSerializer
 
 
 class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, generics.GenericAPIView):
-    """User viewsets"""
+    """User viewsets
+
+    post:
+        Create a new user
+    """
 
     queryset = User.objects.all()
     serializer_class = UserSerializer

@@ -24,7 +24,10 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = ["channels"]
+THIRD_PARTY_APPS = [
+    "channels",
+    "drf_yasg",
+]
 LOCAL_APPS = ["apps.users"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
