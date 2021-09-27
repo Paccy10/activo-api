@@ -8,3 +8,4 @@ channels==3.0.4
 pytest-django==4.1.0
 pytest-cov==2.11.1
 pillow==8.3.2
+drf-yasg==1.20.0
