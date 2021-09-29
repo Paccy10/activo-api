@@ -27,6 +27,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "channels",
     "drf_yasg",
+    "django_rq",
 ]
 LOCAL_APPS = ["apps.users"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -113,3 +114,20 @@ MEDIA_URL = FORCE_SCRIPT_NAME + "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
+RQ_QUEUES = {
+    "default": {
+        "HOST": env("REDIS_HOST"),
+        "PORT": env("REDIS_PORT"),
+        "DB": 0,
+        "DEFAULT_TIMEOUT": 360,
+    },
+}

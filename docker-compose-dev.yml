@@ -7,6 +7,7 @@ services:
       dockerfile: ./docker/local/Dockerfile
     command: /start
     volumes:
+      - activo_media:/app/media
       - .:/app
     ports:
       - 5000:8000
@@ -30,9 +31,36 @@ services:
     networks:
       - activo-api
 
+  redis:
+    image: redis:6-alpine
+    entrypoint: redis-server --appendonly no --save ""
+    ports:
+      - 6378:6379
+    networks:
+      - activo-api  
+  
+  worker:
+    build:
+      context: .
+      dockerfile: ./docker/local/Dockerfile
+    command: /worker
+    volumes:
+      - activo_media:/app/media
+      - .:/app
+    env_file:
+      - .env  
+    depends_on:
+      - redis
+      - api
+    networks:
+      - activo-api   
+
+
 networks:
   activo-api:
     driver: bridge
 
 volumes:
+  activo_media:
+    name: activo_media
   postgres_data:
