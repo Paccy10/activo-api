@@ -19,12 +19,13 @@ class TestCreateUserEndpoint:
     }
 
     def test_create_user_succeeds(self, api_client):
-        
+
         django_rq.enqueue = MagicMock(return_value=None)
         response = api_client.post(self.url, self.data)
 
         assert response.status_code == 201
         assert response.json()["email"] == self.data["email"]
+        assert response.json()["should_set_password"] is True
         assert "initial_password" in response.json()
 
     def test_create_user_without_email_fails(self, api_client):

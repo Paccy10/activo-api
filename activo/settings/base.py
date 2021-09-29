@@ -28,6 +28,7 @@ THIRD_PARTY_APPS = [
     "channels",
     "drf_yasg",
     "django_rq",
+    "rest_framework_simplejwt",
 ]
 LOCAL_APPS = ["apps.users"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -130,4 +131,10 @@ RQ_QUEUES = {
         "DB": 0,
         "DEFAULT_TIMEOUT": 360,
     },
+}
+
+REST_FRAMEWORL = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ]
 }

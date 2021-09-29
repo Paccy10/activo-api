@@ -14,4 +14,5 @@ def new_user():
         email="user@app.com",
         phone_number="+250780000000",
         id_number="111111111111",
+        password="password",
     )
