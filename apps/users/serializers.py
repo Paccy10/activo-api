@@ -1,5 +1,6 @@
 import re
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from libs.utils.helpers import check_unique_value
 from .models import User
@@ -56,6 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
             "phone_number",
             "id_number",
             "profile_picture",
+            "should_set_password",
             "is_active",
             "is_staff",
             "is_superuser",
@@ -87,3 +89,18 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Custom TokenObtainPairSerializer"""
+
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        token = self.get_token(self.user)
+
+        return {
+            "access_token": str(token.access_token),
+            "refresh_token": str(token),
+            "user": UserSerializer(self.user).data,
+        }

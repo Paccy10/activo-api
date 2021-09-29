@@ -1,9 +1,10 @@
 from rest_framework import mixins, generics
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django_rq import enqueue
 from django.template.loader import get_template
 
 from .models import User, generate_password
-from .serializers import UserSerializer
+from .serializers import UserSerializer, CustomTokenObtainPairSerializer
 from libs.utils.helpers import send_email
 
 
@@ -37,4 +38,11 @@ class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, generics.GenericA
         enqueue(send_email, subject, message, [user.email])
 
         response.data["initial_password"] = initial_password
+        response.data["should_set_password"] = user.should_set_password
         return response
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """Custom TokenObtainPairView"""
+
+    serializer_class = CustomTokenObtainPairSerializer

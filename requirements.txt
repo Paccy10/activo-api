@@ -10,3 +10,4 @@ pytest-cov==2.11.1
 pillow==8.3.2
 drf-yasg==1.20.0
 django-rq==2.4.1
+djangorestframework-simplejwt==4.8.0
