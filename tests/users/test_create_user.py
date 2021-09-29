@@ -1,4 +1,6 @@
 import pytest
+import django_rq
+from unittest.mock import MagicMock
 
 from apps.users.error_messages import errors
 
@@ -17,7 +19,8 @@ class TestCreateUserEndpoint:
     }
 
     def test_create_user_succeeds(self, api_client):
-
+        
+        django_rq.enqueue = MagicMock(return_value=None)
         response = api_client.post(self.url, self.data)
 
         assert response.status_code == 201
