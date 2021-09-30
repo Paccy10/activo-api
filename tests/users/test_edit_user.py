@@ -9,6 +9,7 @@ from apps.users.models import User
 
 @pytest.mark.django_db
 class TestUpdateUserEndpoint:
+    """Test update user endpoint"""
 
     url = "/users/"
     data = {
