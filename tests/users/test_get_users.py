@@ -35,3 +35,46 @@ class TestGetUsersEndpoint:
 
         assert response.status_code == 200
         assert len(response.json()) == 1
+
+    def test_get_single_user_with_unauthorized_user_fails(self, api_client, new_user):
+        response = api_client.get(f"{self.url}{new_user.id}/")
+
+        assert response.status_code == 401
+        assert (
+            response.json()["detail"] == "Authentication credentials were not provided."
+        )
+
+    def test_get_single_user_without_add_permission_fails(
+        self, api_client, auth, new_user
+    ):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth['token']}")
+
+        response = api_client.get(f"{self.url}{new_user.id}/")
+
+        assert response.status_code == 403
+        assert (
+            response.json()["detail"]
+            == "You do not have permission to perform this action."
+        )
+
+    def test_get_single_user_succeeds(self, api_client, auth, new_user):
+        permission = Permission.objects.get(codename="view_user")
+        auth["user"].user_permissions.add(permission)
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth['token']}")
+
+        response = api_client.get(f"{self.url}{new_user.id}/")
+
+        assert response.status_code == 200
+        assert response.json()["email"] == new_user.email
+
+    def test_get_single_user_with_unexisted_id_succeeds(
+        self, api_client, auth, new_user
+    ):
+        permission = Permission.objects.get(codename="view_user")
+        auth["user"].user_permissions.add(permission)
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth['token']}")
+
+        response = api_client.get(f"{self.url}10/")
+
+        assert response.status_code == 404
+        assert response.json()["detail"] == "Not found."
