@@ -1,5 +1,6 @@
 import os
 import environ
+import datetime
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -133,8 +134,13 @@ RQ_QUEUES = {
     },
 }
 
-REST_FRAMEWORL = {
+REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ]
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
+
+SIMPLE_JWT = {"ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=1)}
