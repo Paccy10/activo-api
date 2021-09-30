@@ -4,6 +4,7 @@ from django.contrib.auth.models import Permission
 
 @pytest.mark.django_db
 class TestGetUsersEndpoint:
+    """Test Get users endpoint"""
 
     url = "/users/"
 
@@ -35,6 +36,13 @@ class TestGetUsersEndpoint:
 
         assert response.status_code == 200
         assert len(response.json()) == 1
+
+
+@pytest.mark.django_db
+class TestGetUserEndpoint:
+    """Test Get user endpoint"""
+
+    url = "/users/"
 
     def test_get_single_user_with_unauthorized_user_fails(self, api_client, new_user):
         response = api_client.get(f"{self.url}{new_user.id}/")
