@@ -3,6 +3,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from django_rq import enqueue
 from django.template.loader import get_template
+from drf_yasg.utils import swagger_auto_schema
 
 from .models import User, generate_password
 from .serializers import (
@@ -67,17 +68,34 @@ class UsersView(
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
-    """Custom TokenObtainPairView"""
+    """Custom TokenObtainPairView
+
+    post:
+        User login
+    """
 
     serializer_class = CustomTokenObtainPairSerializer
 
+    @swagger_auto_schema(responses={200: CustomTokenObtainPairSerializer})
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class UserDetailsView(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
 ):
     """
     get:
         Get user
+
+    patch:
+        Update user
+
+    delete:
+        Delete user
     """
 
     queryset = User.objects.all()
@@ -90,3 +108,6 @@ class UserDetailsView(
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
