@@ -72,7 +72,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-class UserDetailsView(mixins.RetrieveModelMixin, generics.GenericAPIView):
+class UserDetailsView(
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView
+):
     """
     get:
         Get user
@@ -85,3 +87,6 @@ class UserDetailsView(mixins.RetrieveModelMixin, generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         self.serializer_class = UserDisplaySerializer
         return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
