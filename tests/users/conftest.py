@@ -1,4 +1,6 @@
 import pytest
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import Group
 
 from apps.users.models import User
 
@@ -16,3 +18,18 @@ def new_user():
         id_number="111111111111",
         password="password",
     )
+
+
+@pytest.mark.django_db
+@pytest.fixture
+def new_group():
+    """New user fixture"""
+
+    return Group.objects.create(name="admins")
+
+
+@pytest.fixture
+def auth(new_user):
+    token = RefreshToken.for_user(new_user)
+
+    return {"token": str(token.access_token), "user": new_user}

@@ -1,10 +1,40 @@
 import re
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.models import Group
 
 from libs.utils.helpers import check_unique_value
 from .models import User
 from .error_messages import errors
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ["id", "name"]
+
+
+class UserDisplaySerializer(serializers.ModelSerializer):
+    groups = GroupSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone_number",
+            "id_number",
+            "profile_picture",
+            "should_set_password",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "groups",
+            "created_at",
+            "updated_at",
+        ]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -46,6 +76,9 @@ class UserSerializer(serializers.ModelSerializer):
             "blank": errors["id_number"]["blank"],
         },
     )
+    groups = serializers.SlugRelatedField(
+        slug_field="id", many=True, queryset=Group.objects.all()
+    )
 
     class Meta:
         model = User
@@ -61,6 +94,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "is_superuser",
+            "groups",
             "created_at",
             "updated_at",
         ]
@@ -87,7 +121,9 @@ class UserSerializer(serializers.ModelSerializer):
         return id_number
 
     def create(self, validated_data):
+        groups = validated_data.pop("groups")
         user = User.objects.create_user(**validated_data)
+        user.groups.set(groups)
         return user
 
 
