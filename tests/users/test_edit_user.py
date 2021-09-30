@@ -206,3 +206,38 @@ class TestUpdateUserEndpoint:
 
         assert response.status_code == 400
         assert response.json()["phone_number"] == [errors["phone_number"]["unique"]]
+
+
+@pytest.mark.django_db
+class TestDeleteUserEndpoint:
+    """Test delete user endpoint"""
+
+    url = "/users/"
+
+    def test_delete_user_with_unauthorized_user_fails(self, api_client, new_user):
+        response = api_client.delete(f"{self.url}{new_user.id}/")
+
+        assert response.status_code == 401
+        assert (
+            response.json()["detail"] == "Authentication credentials were not provided."
+        )
+
+    def test_delete_user_without_add_permission_fails(self, api_client, auth, new_user):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth['token']}")
+
+        response = api_client.delete(f"{self.url}{new_user.id}/")
+
+        assert response.status_code == 403
+        assert (
+            response.json()["detail"]
+            == "You do not have permission to perform this action."
+        )
+
+    def test_delete_user_succeeds(self, api_client, auth, new_user):
+        permission = Permission.objects.get(codename="delete_user")
+        auth["user"].user_permissions.add(permission)
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth['token']}")
+
+        response = api_client.delete(f"{self.url}{new_user.id}/")
+
+        assert response.status_code == 204
