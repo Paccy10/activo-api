@@ -14,7 +14,9 @@ from .permissions import ModelPermissions
 from libs.utils.helpers import send_email
 
 
-class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, generics.GenericAPIView):
+class UsersView(
+    mixins.CreateModelMixin, mixins.ListModelMixin, generics.GenericAPIView
+):
     """User viewsets
 
     post:
@@ -68,3 +70,18 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     """Custom TokenObtainPairView"""
 
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class UserDetailsView(mixins.RetrieveModelMixin, generics.GenericAPIView):
+    """
+    get:
+        Get user
+    """
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, ModelPermissions]
+
+    def get(self, request, *args, **kwargs):
+        self.serializer_class = UserDisplaySerializer
+        return self.retrieve(request, *args, **kwargs)
