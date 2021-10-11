@@ -1,7 +1,7 @@
+import django_rq
 from rest_framework import mixins, generics
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
-from django_rq import enqueue
 from django.template.loader import get_template
 from drf_yasg.utils import swagger_auto_schema
 
@@ -55,7 +55,7 @@ class UsersView(
         message = get_template("new_account.html").render(
             {"user": user, "initial_password": initial_password}
         )
-        enqueue(send_email, subject, message, [user.email])
+        django_rq.enqueue(send_email, subject, message, [user.email])
 
         response.data["initial_password"] = initial_password
         response.data["should_set_password"] = user.should_set_password
